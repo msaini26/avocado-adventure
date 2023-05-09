@@ -1,86 +1,43 @@
-# **Candy Clouds** :candy:
+# **Endless Runner** :candy:
 
 **Play the game here!** 👉 https://msaini26.github.io/candy-clouds/
 
 --------
 
-
-## Title Screen :lollipop:
-<img src="https://github.com/msaini26/candy-clouds/blob/main/assets/readme/title_screen.jpg?raw=true" width="400" height="auto" alt="candy-clouds-title-screen">
-
-## Rules Screen :pen:
-<img src="https://github.com/msaini26/candy-clouds/blob/main/assets/readme/rules.jpg?raw=true" width="400" height="auto" alt="candy-clouds-rules-screen">
-
-## Game Controls Screen :video_game:
-<img src="https://github.com/msaini26/candy-clouds/blob/main/assets/readme/game_controls.jpg?raw=true" width="400" height="auto" alt="candy-clouds-game-controls-screen">
-
-## Gameplay Screen :space_invader:
-<img src="https://github.com/msaini26/candy-clouds/blob/main/assets/readme/game.jpg?raw=true" width="400" height="auto" alt="candy-clouds-gameplay-screen">
-
-## Game Over Screen :end:
-<img src="https://github.com/msaini26/candy-clouds/blob/main/assets/readme/game_over.jpg?raw=true" width="400" height="auto" alt="candy-clouds-game-over-screen">
-
-
-## Modification Idea
+## Endless Runner: Avocado Adventure
 
 - Name: Mansi Saini
-- Title: Candy Clouds
+- Title: Avocado Adventure
 - Time: 30+ hours approximately
 
-## 5-Point Tier
+## Endless Runner Grading
 
-✅ Track a high score that persists across scenes and display it in the UI (5)
-    
-    - high score is on the top right of the screen
+Organization (15 points)
+Submit a link to your GitHub repository that shows a history of multiple meaningful commits with descriptive messages (5)
+Submit a playable link on GitHub pages (5)
+In main.js (or equivalent), include a comment header with your name, game title, approximate hours spent on project, and your creative tilt justification (see below) (5)
+Structure and Design (75 points)
+Your game should:
 
-✅ Implement the 'FIRE' UI text from the original game (5)
-    
-    - 'FIRE' UI text is in between score and high score when the player is firing
+Use multiple Scene classes (dictated by your game's style) (5)
+Properly transition between Scenes and allow the player to restart w/out having to reload the page (5)
+Include in-game instructions using text or other means (e.g., tooltips, tutorial, diagram, etc.) (5)
+Have some form of player input/control appropriate to your game design (5)
+Include one or more animated characters that use a texture atlas (5)
+Simulate scrolling with a tileSprite (or equivalent means) (5)
+Implement proper collision detection (via Arcade Physics or a custom routine) (5)
+Have looping background music (5)
+Use a minimum of three sound effects for key mechanics, UI, and/or significant events appropriate to your game design (5)
+Use randomness to generate escalating challenge, e.g. terrain, pickups, etc. (5)
+Include some metric of accomplishment that a player can improve over time, e.g., score, survival time, etc. (5)
+Be theoretically endless (5)
+Be playable for at least 15 seconds for a new player of low to moderate skill (5)
+Run without significant crashes or errors (5)
+Include in-game credits for all roles, assets, music, etc. (5)
+You must make all of your own visual assets (without AI assistance). It's OK to use royalty-free music/SFX.
 
-✅ Add your own (copyright-free) background music to the Play scene (please be mindful of the volume) (5)
-     
-     - background music was in the play screen
+Creative Tilt (10 points)
+Does your game...
 
-✅ Implement the speed increase that happens after 30 seconds in the original game (5)
-     
-     - after 30 seconds, the game speeds up
-
-✅ Create a new scrolling tile sprite for the background (5)
-   
-    - implemented sunset background
-
-
-## 10-Point Tier
-✅ Display the time remaining (in seconds) on the screen (10)
-    
-    - time remaining is visible on bottom left of play screen
-
-✅ Create a new title screen (e.g., new artwork, typography, layout) (10)
-    
-    - candy clouds home page and controls page to teach player controls
-        (bonus: added controls and rules pages of game)__
-
-✅ Implement parallax scrolling for the background (10)
-    
-    - fog moves at a different speed than the clouds and the ground
-
-## 15-Point Tier
-✅ Create a new enemy Spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (15)
-    
-    - gummy bear is flying so fast on the left
-
-✅ Implement a new timing/scoring mechanism that adds time to the clock for successful hits (15)
-    
-    - adds 5ish seconds for each successful hit
-        **(bonus: added an enemy egg that decreases the time left if you hit it - 20 seconds)**
-
-✅ Implement mouse control for player movement and mouse click to fire (15)
-     
-     - choose mouse control in the controls menu before continuing into the game
-
-*credit: https://rexrainbow.github.io/phaser3-rex-notes/docs/site/localstorage/*
-*to understand how localStorage works*
-
-*credit: background layer assets credit to craftpix.net*
-*from their website, "You can download it absolutely for free and use it in your games for commercial purposes."*
-
+...do something technically interesting? Are you particularly proud of a programming technique you implemented? Did you look beyond the class examples and learn how to do something new? (5)
+...have a great visual style? Does it use music or art that you're particularly proud of? Are you trying something new or clever with the endless runner form? (5)

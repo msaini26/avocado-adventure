@@ -9,14 +9,14 @@ class Rocket extends Phaser.GameObjects.Sprite {
         this.moveSpeed = 5; // pixels per frame
 
         // add rocket sfx
-        this.sfxRocket = scene.sound.add('sfx_rocket');
+        // this.sfxRocket = scene.sound.add('sfx_rocket');
     }
 
     // update rocket per frame
     update() {
 
         // using arrow keys to launch rocket
-        if(!this.isFiring & !mouseMove) {
+        if(!this.isFiring) {
             if (keyLEFT.isDown && this.x >= borderUISize + this.width) { // move player left
                 this.x -= this.moveSpeed;
             } else if (keyRIGHT.isDown && this.x <= game.config.width - borderUISize - this.width) { // move player right
@@ -24,23 +24,11 @@ class Rocket extends Phaser.GameObjects.Sprite {
             }
         }
 
-        // mouse movement to launch rocket
-        if (!this.isFiring && mouseMove) {
-            if (mouse.x >= borderUISize + this.width/2 && mouse.x <= game.config.width - borderUISize - this.width/2) {
-                this.x = mouse.x; // set mouse movement along x axis
-            }
-        }
-
         // fire button
         // (f) key to fire
-        if(!mouseMove && Phaser.Input.Keyboard.JustDown(keyF) && !this.isFiring) {
+        if(Phaser.Input.Keyboard.JustDown(keyF) && !this.isFiring) {
             this.isFiring = true;
-            this.sfxRocket.play(); // play sfx
-        }
-        // click mouse to fire
-        if (mouseMove && mouse.isDown && !this.isFiring) {
-            this.isFiring = true;
-            this.sfxRocket.play(); // play sfx
+            // this.sfxRocket.play(); // play sfx
         }
 
         // if fired, move up
@@ -60,10 +48,5 @@ class Rocket extends Phaser.GameObjects.Sprite {
     reset() {
         this.isFiring = false;
         this.y = game.config.height - borderUISize - borderPadding - 40;
-
-        // need to reset mouse location with mouse use
-        if (mouseMove) {
-            this.x = mouse.x;
-        }
     }
 }
