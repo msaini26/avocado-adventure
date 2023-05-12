@@ -23,11 +23,20 @@ class Play extends Phaser.Scene {
         this.VELOCITY = 500;
         this.MAX_X_VEL = 500; // pixels/seconds
         this.MAX_Y_VEL = 5000; 
+        this.JUMP_VEL = -800;
         this.physics.world.gravity.y = 2000;
 
+        // draw grid lines for jump height reference
+        let graphics = this.add.graphics();
+        graphics.lineStyle(2, 0xFFFFFF, 0.1);
+	    for(let y = game.config.height-70; y >= 35; y -= 35) {
+            graphics.lineBetween(0, y, game.config.width, y);
+        }
 
-        this.platform = this.add.sprite(game.config.width/2, game.config.height/2, 'bread').setScale(0.12).setOrigin(0);
-        // this.platform = new Spaceship(this, game.config.width + borderUISize * 6, borderUISize * 3.5, 'candy', 0, 30).setOrigin(0, 0);
+        // bread platform
+        this.platform = this.physics.add.sprite(game.config.width/2, game.config.height/2, 'bread').setScale(0.12).setOrigin(0);
+        this.platform.body.immovable = true; // don't move platform
+        this.platform.body.allowGravity = false; // gravity doesn't exist
 
 
         // make ground tiles group
@@ -45,30 +54,32 @@ class Play extends Phaser.Scene {
         this.avocado.setCollideWorldBounds(true);
         this.avocado.setBounceY(1);
 
+        // set avocado jumping squish animation
         this.anims.create({
             key: 'jump',
             frameRate: 25,
             frames: this.anims.generateFrameNames('squash', {
                 prefix: 'avocado-squash', // img identif
                 start: 0, // starting frame
-                end: 11 // end frame
+                end: 10 // end frame
             }),
-            // repeat: -1 // endless looping
         });
 
-    
-       // jump squish avocado
-        // this.avocado.anims.play('jump', true);
+        // prevent avocado top collision with platform bottom
+        this.avocado.body.checkCollision.up = false;
+        this.avocado.body.checkCollision.left = false;
+        this.avocado.body.checkCollision.right = false;
+
+
 
         // add physics collider
-        this.physics.add.collider(this.avocado, this.ground);
+        this.physics.add.collider(this.avocado, this.ground); // avocado collides with ground
+        this.physics.add.collider(this.avocado, this.platform); // avacado collides with platform
 
 
 
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
-
-       
     }
 
     // constant updates in game canvas
@@ -81,9 +92,13 @@ class Play extends Phaser.Scene {
 
         // check if avocado hit ground
         if (this.avocado.onGround) {
+            // KEEP THE JUMP VELOCITY FOR CONSISTENCY IN JUMPING; NO LOSING VELOCITY WITH COLLISIONS
+            this.avocado.body.velocity.y = this.JUMP_VEL;
             console.log('avo hit groundo');
             this.avocado.anims.play('jump', true);
-        }
+        }        
+
+        
 
         // check keyboard input
         if (cursors.left.isDown) { 
