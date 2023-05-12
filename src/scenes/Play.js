@@ -76,10 +76,20 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.avocado, this.ground); // avocado collides with ground
         this.physics.add.collider(this.avocado, this.platform); // avacado collides with platform
 
-
-
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
+
+        // set camera viewports 
+        const viewportW = game.config.width/2;
+        const viewportH = game.config.height/2;
+
+        // TODO: figure out camera situation
+        // set camera
+        // this.cam = this.cameras.add(0, 0, viewportW, viewportH);
+
+        // set camera bounds
+        // this.cam.setBounds(0, 0, game.config.width, game.config.height);
+
     }
 
     // constant updates in game canvas
@@ -87,6 +97,11 @@ class Play extends Phaser.Scene {
         // update platform scrolling
         this.platform.update();
 
+        // // when avocado is moving
+        // if (this.avocado.VELOCITY > 0) {
+        //     this.cam.scrollY = 10;
+        // }
+    
         // avocado is on the ground
         this.avocado.onGround = this.avocado.body.touching.down;
 

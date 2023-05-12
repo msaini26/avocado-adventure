@@ -3,7 +3,6 @@ class Platform extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, frame, pointValue) {
         super(scene, x, y, texture, frame); // inherit phaser functionalities
         scene.add.existing(this); // add to existing scene
-        this.moveSpeed = game.settings.platformSpeed; // pixels per frame
     }
 
     // updates per frame
