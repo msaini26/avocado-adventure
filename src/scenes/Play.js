@@ -7,9 +7,10 @@ class Play extends Phaser.Scene {
     // preload assets
     preload() {
         // load images/tile sprites
-        this.load.image('avocado-player', './assets/player/avocado.png'); // player rocket image
+        // this.load.image('avocado-player', './assets/player/avocado.png'); // player rocket image
         this.load.image('sky', './assets/background/sky.png'); // sky background image
         this.load.image('bread', './assets/platform/final-bread.png'); // bread ground tiles
+        this.load.atlas('squash', './assets/player/squash.png', './assets/json/squash.json'); // import avocado squash texture atlas
         }
 
     // create objects and instances in phaser canvas
@@ -22,61 +23,67 @@ class Play extends Phaser.Scene {
         this.VELOCITY = 500;
         this.MAX_X_VEL = 500; // pixels/seconds
         this.MAX_Y_VEL = 5000; 
-        this.physics.world.gravity.y = 3000;
+        this.physics.world.gravity.y = 2000;
 
-        // // draw grid lines for jump height reference
-        // let graphics = this.add.graphics();
-        // graphics.lineStyle(2, 0xFFFFFF, 0.1);
-        //     for (let y = game.config.height - 70; y >= 35; y-=35) {
-        //         graphics.lineBetween(0, y, game.config.width, y);
-        // }
 
-        // TODO: figure out how to make platform scroll with the background
-        // TODO: insert avocado squish animation
-        this.platform = this.add.sprite(game.config.width/2, game.config.height/2, 'bread').setScale(SCALE).setOrigin(0);
+        this.platform = this.add.sprite(game.config.width/2, game.config.height/2, 'bread').setScale(0.12).setOrigin(0);
         // this.platform = new Spaceship(this, game.config.width + borderUISize * 6, borderUISize * 3.5, 'candy', 0, 30).setOrigin(0, 0);
 
 
         // make ground tiles group
         this.ground = this.add.group();
         for (let i = 0; i < game.config.width; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize, 'bread', 'block').setScale(SCALE).setOrigin(0);
+            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize*3, 'bread').setScale(0.25).setOrigin(0);
             groundTile.body.immovable = true;
             groundTile.body.allowGravity = false;
             this.ground.add(groundTile)
         }
 
-        for(let i = tileSize*14; i < game.config.width-tileSize*5; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize*5, 'bread', 'block').setScale(SCALE).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile);
-        }
-        for(let i = tileSize*2; i < game.config.width-tileSize*18; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize*9, 'bread', 'block').setScale(SCALE).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile);
-        }
-
         // set up jumping avocado
-        this.avocado = this.physics.add.sprite(game.config.width/2, 50, 'avocado-player', 'front').setScale(SCALE);
+        this.avocado = this.physics.add.sprite(game.config.width/2, 50, 'squash', 'avocado-squash0').setScale(0.15);
         this.avocado.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.avocado.setCollideWorldBounds(true);
         this.avocado.setBounceY(1);
 
-        // set up Phaser-provided cursor key input
-        cursors = this.input.keyboard.createCursorKeys();
+        this.anims.create({
+            key: 'jump',
+            frameRate: 25,
+            frames: this.anims.generateFrameNames('squash', {
+                prefix: 'avocado-squash', // img identif
+                start: 0, // starting frame
+                end: 11 // end frame
+            }),
+            // repeat: -1 // endless looping
+        });
+
+    
+       // jump squish avocado
+        // this.avocado.anims.play('jump', true);
 
         // add physics collider
         this.physics.add.collider(this.avocado, this.ground);
 
+
+
+        // set up Phaser-provided cursor key input
+        cursors = this.input.keyboard.createCursorKeys();
+
+       
     }
 
     // constant updates in game canvas
     update() {
         // update platform scrolling
         this.platform.update();
+
+        // avocado is on the ground
+        this.avocado.onGround = this.avocado.body.touching.down;
+
+        // check if avocado hit ground
+        if (this.avocado.onGround) {
+            console.log('avo hit groundo');
+            this.avocado.anims.play('jump', true);
+        }
 
         // check keyboard input
         if (cursors.left.isDown) { 
