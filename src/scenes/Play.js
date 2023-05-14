@@ -69,7 +69,7 @@ class Play extends Phaser.Scene {
 
         // create sound instance
         var music = this.sound.add('game-music', musicConfig);
-        // music.play(musicConfig); // play music with config settings
+        music.play(musicConfig); // play music with config settings
 
         // create sound instance
         this.boing = this.sound.add('boing', this.boingConfig);
