@@ -1,3 +1,18 @@
+/*
+
+Name: Mansi Saini
+Title: Avocado Adventure
+Time: 30+ hours approximately
+
+Creative Tilt: super proud of vertical endless runner with jump and squish. 
+                I had to keep destroying, shifting, and re-rendering the baguettes
+                based on the camera view which was super hard, but I figured it out!
+
+                also, I stored the high score for fun with cool sound effects while playing!
+
+*/
+
+
 
 // global variables
 let cursors;
