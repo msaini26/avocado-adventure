@@ -295,6 +295,8 @@ class Play extends Phaser.Scene {
             this.game_end = this.add.text(game.config.width/2 - 20, 300, 'Press (R) to Restart or ← for Menu', this.scoreConfig).setOrigin(0.5);
             this.game_end.fixedToCamera = true;
             this.game_end.setScrollFactor(0,0);
+            this.game_end.setShadow(2, 2, '#2d4e3f');
+
         }
 
         // check key input for restart
