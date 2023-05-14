@@ -4,6 +4,8 @@ Name: Mansi Saini
 Title: Avocado Adventure
 Time: 30+ hours approximately
 
+NOTE: may take a second to load everything on deployed link due to all cool fun effects in game
+
 Creative Tilt: super proud of vertical endless runner with jump and squish. 
                 I had to keep destroying, shifting, and re-rendering the baguettes
                 based on the camera view which was super hard, but I figured it out!
