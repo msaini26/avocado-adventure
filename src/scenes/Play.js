@@ -38,7 +38,7 @@ class Play extends Phaser.Scene {
         this.physics.world.gravity.y = 2000;
 
         // background music configurations
-        let musicConfig = {
+        this.gameMusicConfig = {
             mute: false,
             volume: 0.2,
             rate: 1,
@@ -49,7 +49,7 @@ class Play extends Phaser.Scene {
         // boing sound effect configurations
         this.boingConfig = {
             mute: false,
-            volume: 0.5,
+            volume: 1,
             rate: 1,
             loop: false,
             delay: 0,
@@ -68,8 +68,8 @@ class Play extends Phaser.Scene {
         
 
         // create sound instance
-        var music = this.sound.add('game-music', musicConfig);
-        music.play(musicConfig); // play music with config settings
+        this.game_music = this.sound.add('game-music', this.musicConfig);
+        this.game_music.play(this.gameMusicConfig); // play music with config settings
 
         // create sound instance
         this.boing = this.sound.add('boing', this.boingConfig);
@@ -300,12 +300,14 @@ class Play extends Phaser.Scene {
         // check key input for restart
         if (gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             console.log("RIGHT");
+            this.game_music.stop();
             this.endGame.play(this.endConfig); // play music with config settings
             this.scene.restart(); // reset the scene
         }
 
         // check key input for menu
         if (gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.game_music.stop();
             console.log("RIGHT");
             this.endGame.play(this.endConfig); // play music with config settings
             this.scene.start("menuScene");
