@@ -9,12 +9,13 @@ const tileSize = 35;
 // set game configurations
 let config = {
     type: Phaser.CANVAS, // init game canvas
+    backgroundColor: '#C1E1C1',
     width: 640, // init width
     height: 480, // init height
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            // debug: true,
             gravity: {
                 x: 0,
                 y: 0
@@ -26,9 +27,7 @@ let config = {
 
 let game = new Phaser.Game(config); // init new phaser game
 
-// set UI sizes
-let borderUISize = game.config.height / 15; // set UI height
-let borderPadding = borderUISize / 3; // set padding around game frame
+
 
 // reserve keyboard vars
 let keyF, keyR, keyLEFT, keyRIGHT; 

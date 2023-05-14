@@ -7,8 +7,7 @@ class Play extends Phaser.Scene {
     // preload assets
     preload() {
         // load images/tile sprites
-        // this.load.image('avocado-player', './assets/player/avocado.png'); // player rocket image
-        this.load.image('sky', './assets/background/sky.png'); // sky background image
+        this.load.image('sky', './assets/background/background.png'); // sky background image
         this.load.image('bread', './assets/platform/final-bread.png'); // bread ground tiles
         this.load.atlas('squash', './assets/player/squash.png', './assets/json/squash.json'); // import avocado squash texture atlas
         }
@@ -16,8 +15,14 @@ class Play extends Phaser.Scene {
     // create objects and instances in phaser canvas
     create() {
         
-        this.sky = this.add.tileSprite(0, 0, 640, 480, 'sky').setOrigin(0, 0); // place background tile sprite
+        const sky_height = 480*5;
+        const sky_width = 640;
+
+        this.sky = this.add.tileSprite(0, -5, sky_width, sky_height, 'sky').setOrigin(0, 0); // place background tile sprite
               
+        // create new invisible above old sky
+        this.other_sky = this.add.tileSprite(0, this.sky.y - sky_height, sky_width, sky_height, 'sky').setOrigin(0, 0); // place background tile sprite
+
         // credit: professor's example of movement studies in phaser
         // variables and settings 
         this.VELOCITY = 500;
@@ -26,34 +31,36 @@ class Play extends Phaser.Scene {
         this.JUMP_VEL = -800;
         this.physics.world.gravity.y = 2000;
 
-        // draw grid lines for jump height reference
-        let graphics = this.add.graphics();
-        graphics.lineStyle(2, 0xFFFFFF, 0.1);
-	    for(let y = game.config.height-70; y >= 35; y -= 35) {
-            graphics.lineBetween(0, y, game.config.width, y);
-        }
+        // // draw grid lines for jump height reference
+        // let graphics = this.add.graphics();
+        // graphics.lineStyle(2, 0xFFFFFF, 0.1);
+	    // for(let y = game.config.height-30; y >= 35; y -= 35) {
+        //     graphics.lineBetween(0, y, game.config.width, y);
+        // }
 
-        // bread platform
-        this.platform = this.physics.add.sprite(game.config.width/2, game.config.height/2, 'bread').setScale(0.12).setOrigin(0);
-        this.platform.body.immovable = true; // don't move platform
-        this.platform.body.allowGravity = false; // gravity doesn't exist
+        
+        // each height, new rendered baguette
+        this.baguette_platforms = this.add.group(); // create group of platforms
 
-
-        // make ground tiles group
-        this.ground = this.add.group();
-        for (let i = 0; i < game.config.width; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize*3, 'bread').setScale(0.25).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile)
+        for (let i = 0; i < game.config.height - 100; i+= 30) { 
+            let baguette = this.physics.add.sprite(game.config.width * Math.random(), i, 'bread').setScale(0.12).setOrigin(0);
+            baguette.body.immovable = true;
+            baguette.body.allowGravity = false;
+            this.baguette_platforms.add(baguette);
         }
 
         // set up jumping avocado
-        this.avocado = this.physics.add.sprite(game.config.width/2, 50, 'squash', 'avocado-squash0').setScale(0.15);
+        this.avocado = this.physics.add.sprite(game.config.width/2, game.config.height - 200, 'squash', 'avocado-squash0').setScale(0.15);
         this.avocado.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
-        this.avocado.setCollideWorldBounds(true);
+        this.avocado.setCollideWorldBounds(false);
         this.avocado.setBounceY(1);
 
+        // initial tile
+        this.init_tile = this.physics.add.sprite(this.avocado.x - 29, this.avocado.y + 500, 'bread').setScale(0.12).setOrigin(0, 0);
+        this.init_tile.body.immovable = true;
+        this.init_tile.body.allowGravity = false;
+
+        
         // set avocado jumping squish animation
         this.anims.create({
             key: 'jump',
@@ -70,38 +77,68 @@ class Play extends Phaser.Scene {
         this.avocado.body.checkCollision.left = false;
         this.avocado.body.checkCollision.right = false;
 
-
-
         // add physics collider
         this.physics.add.collider(this.avocado, this.ground); // avocado collides with ground
-        this.physics.add.collider(this.avocado, this.platform); // avacado collides with platform
+        this.physics.add.collider(this.avocado, this.baguette_platforms); // avacado collides with platform
+        this.physics.add.collider(this.avocado, this.init_tile); // collide with initial tile
 
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
 
         // set camera viewports 
-        const viewportW = game.config.width/2;
-        const viewportH = game.config.height/2;
+        const viewportW = game.config.width;
+        const viewportH = 480;
 
-        // TODO: figure out camera situation
         // set camera
-        // this.cam = this.cameras.add(0, 0, viewportW, viewportH);
+        this.cam = this.cameras.main.setViewport(0, 0, viewportW, viewportH);
 
         // set camera bounds
-        // this.cam.setBounds(0, 0, game.config.width, game.config.height);
+        this.cam.setBounds(0, 0, game.config.width, game.config.height*100);
+        
+        // assign cam to follow avocado
+        this.cam.startFollow(this.avocado);
+
+        // flags
+        this.MOVING_STUFF = false;
+
+        // initialize score
+        this.p1Score = 0;
+
+        // display score
+        let scoreConfig = {
+            fontFamily:'chicken-pie', // set font
+            fontSize: '28px', // set font size
+            backgroundColor: '#e7c9ff', // set score background color
+            color: '#FFFFFF', // set text color
+            align: 'center', // align score to the center
+            padding: { // set padding around text
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 70 // set max width
+        }
+
+        // add score text
+        this.scoreLeft = this.add.text(10, 10,  this.p1Score, scoreConfig).setOrigin(0,0);
+        this.scoreLeft.setShadow(2, 2, '#6b74bd');
+
+        // count number of scrols
+        this.num_scroll = 0
 
     }
 
     // constant updates in game canvas
     update() {
-        // update platform scrolling
-        this.platform.update();
 
-        // // when avocado is moving
-        // if (this.avocado.VELOCITY > 0) {
-        //     this.cam.scrollY = 10;
-        // }
-    
+        // when avocado reaches the next zone
+        if (this.avocado.y <= this.game.config.height/3*2){
+            this.scroll_food_down();
+            this.generate_food_up();
+            this.p1Score += 10; // increment score
+            console.log("score: ", this.p1Score);
+            this.num_scroll += 1;
+        }
+
         // avocado is on the ground
         this.avocado.onGround = this.avocado.body.touching.down;
 
@@ -109,12 +146,9 @@ class Play extends Phaser.Scene {
         if (this.avocado.onGround) {
             // KEEP THE JUMP VELOCITY FOR CONSISTENCY IN JUMPING; NO LOSING VELOCITY WITH COLLISIONS
             this.avocado.body.velocity.y = this.JUMP_VEL;
-            console.log('avo hit groundo');
             this.avocado.anims.play('jump', true);
         }        
-
         
-
         // check keyboard input
         if (cursors.left.isDown) { 
             this.avocado.body.setVelocityX(-this.VELOCITY); // move character left
@@ -128,9 +162,128 @@ class Play extends Phaser.Scene {
             this.avocado.body.setVelocityX(0); // not moving left or right
         }
 
-        // create vertical scrolling for tilemap
-        this.sky.tilePositionY -= 1.5; 
+        // TODO: create an array of indices to be removed
+
+
+        // iterate through baguette group
+        for (let i = 0; i < this.baguette_platforms.children.entries.length; i++) {
+            // console.log(this.baguette_platforms.children[0])
+            let baguette = this.baguette_platforms.children.entries[i];
+    
+
+            if (baguette == null || !baguette) {
+                continue;
+            }
+
+            // check if baguette is in camera view
+            if (baguette.y >= this.cam.midPoint.y + this.cam._height/2 &&
+                !this.MOVING_STUFF) {
+                // TODO Remove the baguette from baguette_platforms
+                this.baguette_platforms.children.delete(baguette);
+                baguette.destroy(); 
+                
+            }                
+        }
+        // check if the image is out of the frame
+        if (this.sky.y >= this.cam.midPoint.y + this.cam._height/2 &&
+        !this.MOVING_STUFF) {
+            this.sky.y = (this.other_sky.y - this.sky.height);
+            console.log("SKY IS MOVED");
+        }
+
+        if (this.other_sky.y >= this.cam.midPoint.y + this.cam._height/2 &&
+        !this.MOVING_STUFF) {
+            this.other_sky.y = (this.sky.y - this.other_sky.height);
+            console.log("OTHER SKY IS MOVED");
+        }
+
+
+        if (this.MOVING_STUFF) {
+            this.MOVING_STUFF = false;
+        }
+
+        // wraps around right
+        if (this.avocado.x > game.config.width) {
+            this.avocado.x = 0;
+        }
+
+        // wraps around right
+        if (this.avocado.x < 0) {
+            this.avocado.x = game.config.width;
+        }
         
+    }
+
+
+    // moves baguettes and avocados down when it gets to the next zone
+    scroll_food_down() {
+        const SCROLL_AMT = 400;
+
+        this.avocado.y += SCROLL_AMT;
         
+        for (let i = 0; i < this.baguette_platforms.children.entries.length; i++) {
+            let baguette = this.baguette_platforms.children.entries[i];
+            
+            if (baguette == null) {
+                continue;
+            }
+
+            baguette.y += SCROLL_AMT;
+            
+        }
+
+        this.MOVING_STUFF = true;
+        console.log("MOVING STUFF");
+        console.log(this.baguette_platforms.children)
+        console.log("MOVED STUFF")
+
+        // remove initial tile if not already destroyed
+        // to prevent re-population of initial tile 
+        // when you move everything down
+        if (this.init_tile != null && this.num_scroll > 0) {
+            this.init_tile.destroy();
+            console.log("DESTROY");
+        }
+
+
+        // move tile down
+        //this.sky.tilePositionY += SCROLL_AMT;
+        this.other_sky.y += SCROLL_AMT;
+        this.sky.y += SCROLL_AMT;
+
+        console.log(this.sky);
+    }
+
+    // find highest baguette in the array of baguette platforms
+    get_highest_baguette(platforms) {
+        let max = game.config.height;
+        for (let i = 0; i < this.baguette_platforms.children.entries.length; i++) {
+            let baguette = this.baguette_platforms.children.entries[i];
+
+            if (baguette == null) {
+                continue;
+            }
+
+            // max baguette
+            if (baguette.y <= max) {
+                max = baguette.y;
+            }
+        }
+        return max;
+    }
+
+    // generate new baguettes above
+    generate_food_up() {
+        // each height, new rendered baguette
+
+        let height = this.get_highest_baguette(this.baguette_platforms.children);
+        // continue generating baguettes
+        for (let i = 0; i < 50; i++) {
+            let baguette_height = height - 60 * i;
+            let baguette = this.physics.add.sprite(game.config.width * Math.random(), baguette_height, 'bread').setScale(0.12).setOrigin(0);
+            baguette.body.immovable = true;
+            baguette.body.allowGravity = false;
+            this.baguette_platforms.add(baguette);
+        }
     }
 }
