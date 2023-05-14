@@ -105,7 +105,7 @@ class Play extends Phaser.Scene {
         this.p1Score = 0;
 
         // display score
-        let scoreConfig = {
+        this.scoreConfig = {
             fontFamily:'chicken-pie', // set font
             fontSize: '28px', // set font size
             backgroundColor: '#e7c9ff', // set score background color
@@ -115,12 +115,35 @@ class Play extends Phaser.Scene {
                 top: 5,
                 bottom: 5,
             },
-            fixedWidth: 70 // set max width
+            // fixedWidth: 70 // set max width
+        }
+
+        // display score
+        let highScoreConfig = {
+            fontFamily:'comic-story', // set font
+            fontSize: '28px', // set font size
+            backgroundColor: '#e7c9ff', // set score background color
+            color: '#FFFFFF', // set text color
+            align: 'center', // align score to the center
+            padding: { // set padding around text
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 275 // set max width
         }
 
         // add score text
-        this.scoreLeft = this.add.text(10, 10,  this.p1Score, scoreConfig).setOrigin(0,0);
+        this.scoreLeft = this.add.text(this.game.config.width - 50, 50,  this.p1Score, this.scoreConfig).setOrigin(0,0);
         this.scoreLeft.setShadow(2, 2, '#6b74bd');
+        this.scoreLeft.fixedToCamera = true;
+        this.scoreLeft.setScrollFactor(0,0);
+
+        // high score text
+        this.highScore = this.add.text(this.game.config.width/40, 50, "High Score: " + localStorage.getItem('highscore'), highScoreConfig);
+        this.highScore.setShadow(2, 2, '#6b74bd');
+        this.highScore.fixedToCamera = true; // don't move text
+        this.highScore.setScrollFactor(0,0); 
+        this.highScore.depth = 10; // make sure text is on top
 
         // count number of scrols
         this.num_scroll = 0
@@ -135,6 +158,7 @@ class Play extends Phaser.Scene {
             this.scroll_food_down();
             this.generate_food_up();
             this.p1Score += 10; // increment score
+            this.scoreLeft.text = this.p1Score;
             console.log("score: ", this.p1Score);
             this.num_scroll += 1;
         }
@@ -211,6 +235,30 @@ class Play extends Phaser.Scene {
         if (this.avocado.x < 0) {
             this.avocado.x = game.config.width;
         }
+
+        let gameOver = false;
+
+        if (this.avocado.y >= 2400) {
+            gameOver = true;
+            console.log("GAMEOVER");
+        }
+        // when game is over
+        if (gameOver) {
+            this.game.pause(); // pause game
+            this.add.text(this.game.config.width/2 - 90, this.avocado.y,  "Game Over!", this.scoreConfig).setOrigin(0,0);
+            this.avocado.destroy();
+        }
+
+        // update high score if doesn't exist already
+        if (localStorage.getItem('highscore' == null)) {
+            localStorage.setItem('highscore', this.p1Score);
+        }
+        
+        // update max score if greater than first item
+        else if (this.p1Score > localStorage.getItem('highscore')) {
+            localStorage.setItem('highscore', this.p1Score); // update score
+            this.highScore.text = "High Score: " + localStorage.getItem('highscore'); // updates high score as you beat it
+        }
         
     }
 
@@ -279,7 +327,7 @@ class Play extends Phaser.Scene {
         let height = this.get_highest_baguette(this.baguette_platforms.children);
         // continue generating baguettes
         for (let i = 0; i < 50; i++) {
-            let baguette_height = height - 60 * i;
+            let baguette_height = height - 70 * i; // set difficulty
             let baguette = this.physics.add.sprite(game.config.width * Math.random(), baguette_height, 'bread').setScale(0.12).setOrigin(0);
             baguette.body.immovable = true;
             baguette.body.allowGravity = false;
