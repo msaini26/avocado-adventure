@@ -12,8 +12,11 @@ class Menu extends Phaser.Scene {
         // this.load.audio('sfx_rocket', './assets/rocket_shot.wav');
 
         // title screen background
-        this.load.image('background', './assets/background/title_sky.png'); // sky background image
-        this.load.spritesheet('stars', './assets/background/title_stars.png', {frameWidth: 640, frameHeight: 480, startFrame: 0, endFrame: 9});
+        this.load.image('background', './assets/background/title.png'); // sky background image
+
+        // credit: pixabay - jimgor33: Loading Main Menu
+        // load background music
+        this.load.audio('background_music', './assets/menu.mp3');
 
     }
 
@@ -21,21 +24,6 @@ class Menu extends Phaser.Scene {
     create () {
         // display title image
         this.background = this.add.tileSprite(0, 0, 640, 480, 'background').setOrigin(0, 0); // place background tile sprite
-
-        // animation config - stars sparkling
-        this.anims.create({
-            key: 'sparkle',
-            frameRate: 6,
-            frames: this.anims.generateFrameNumbers('stars'),
-            repeat: -1,
-            reverse: false
-        });
-
-        var stars = this.add.sprite(350, 400, 'stars');
-        var more_stars = this.add.sprite(300, 150, 'stars');
-
-        stars.play('sparkle');
-        more_stars.play('sparkle');
 
 
         // set menu configurations
@@ -76,15 +64,33 @@ class Menu extends Phaser.Scene {
        
         // show menu text
         var title = this.add.text(game.config.width/30, game.config.height/4 - borderUISize - borderPadding, ' Avocado Adventure', titleConfig);
-        title.setShadow(4, 4, '#6b74bd');
+        title.setShadow(4, 4, '#2d4e3f');
+        console.log(title);
 
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = '#000';
-        this.add.text(game.config.width/2, game.config.height/1.5 + borderUISize + borderPadding, 'Press ← for Novice or → for Expert', subConfig).setOrigin(0.5);
+        var level_mode = this.add.text(game.config.width/2 - 20, game.config.height/1.5 + borderUISize + borderPadding, 'Press ← to continue', subConfig).setOrigin(0.5);
+        level_mode.setShadow(4, 4, '#2d4e3f');
+
 
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
+
+         // background music configurations
+         let musicConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            loop: true,
+            delay: 0,
+        }
+
+        // create sound instance
+        this.music = this.sound.add('background_music', musicConfig);
+        this.music.play(musicConfig); // play music with config settings
+
 
     }
 
@@ -97,16 +103,8 @@ class Menu extends Phaser.Scene {
                 gameTimer: 61000
             }
             this.sound.play('sfx_select'); // play background music
-            this.scene.start('playScene');
-        }
-        if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-            // hard mode
-            game.settings = {
-                spaceshipSpeed: 4,
-                gameTimer: 46000
-            }
-            this.sound.play('sfx_select');
-            this.scene.start('playScene');
+            this.scene.start('controlsScene');
+            this.music.stop();
         }
     }
 }

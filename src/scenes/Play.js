@@ -10,8 +10,14 @@ class Play extends Phaser.Scene {
         this.load.image('sky', './assets/background/background.png'); // sky background image
         this.load.image('bread', './assets/platform/final-bread.png'); // bread ground tiles
         this.load.atlas('squash', './assets/player/squash.png', './assets/json/squash.json'); // import avocado squash texture atlas
-        }
 
+        // credit: pixabay - AlexiMusic: Passion
+        // load background music
+        this.load.audio('game-music', './assets/background_music.mp3');
+        this.load.audio('boing', './assets/boing.mp3');
+        this.load.audio('end', './assets/end-game.mp3');
+
+    }
     // create objects and instances in phaser canvas
     create() {
         
@@ -31,13 +37,44 @@ class Play extends Phaser.Scene {
         this.JUMP_VEL = -800;
         this.physics.world.gravity.y = 2000;
 
-        // // draw grid lines for jump height reference
-        // let graphics = this.add.graphics();
-        // graphics.lineStyle(2, 0xFFFFFF, 0.1);
-	    // for(let y = game.config.height-30; y >= 35; y -= 35) {
-        //     graphics.lineBetween(0, y, game.config.width, y);
-        // }
+        // background music configurations
+        let musicConfig = {
+            mute: false,
+            volume: 0.2,
+            rate: 1,
+            loop: true,
+            delay: 0,
+        }
 
+        // boing sound effect configurations
+        this.boingConfig = {
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            loop: false,
+            delay: 0,
+        }
+        
+        // game over sound configurations
+        this.endConfig = {
+            mute: false,
+            volume: 0.5,
+            rate: 2,
+            loop: false,
+            delay: 0,
+        }
+
+        // destroy menu background music
+        
+
+        // create sound instance
+        var music = this.sound.add('game-music', musicConfig);
+        // music.play(musicConfig); // play music with config settings
+
+        // create sound instance
+        this.boing = this.sound.add('boing', this.boingConfig);
+       
+        this.endGame = this.sound.add('end', this.endConfig);
         
         // each height, new rendered baguette
         this.baguette_platforms = this.add.group(); // create group of platforms
@@ -134,19 +171,26 @@ class Play extends Phaser.Scene {
 
         // add score text
         this.scoreLeft = this.add.text(this.game.config.width - 50, 50,  this.p1Score, this.scoreConfig).setOrigin(0,0);
-        this.scoreLeft.setShadow(2, 2, '#6b74bd');
+        this.scoreLeft.setShadow(2, 2, '#2d4e3f');
         this.scoreLeft.fixedToCamera = true;
         this.scoreLeft.setScrollFactor(0,0);
 
         // high score text
-        this.highScore = this.add.text(this.game.config.width/40, 50, "High Score: " + localStorage.getItem('highscore'), highScoreConfig);
-        this.highScore.setShadow(2, 2, '#6b74bd');
+        this.highScore = this.add.text(this.game.config.width/40, 50, "High Score: " + localStorage.getItem('highscore_avo'), highScoreConfig);
+        this.highScore.setShadow(2, 2, '#2d4e3f');
         this.highScore.fixedToCamera = true; // don't move text
         this.highScore.setScrollFactor(0,0); 
         this.highScore.depth = 10; // make sure text is on top
 
         // count number of scrols
         this.num_scroll = 0
+
+        // define keys
+        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F); 
+        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
 
     }
 
@@ -163,6 +207,8 @@ class Play extends Phaser.Scene {
             this.num_scroll += 1;
         }
 
+        let gameOver = false;
+
         // avocado is on the ground
         this.avocado.onGround = this.avocado.body.touching.down;
 
@@ -171,6 +217,8 @@ class Play extends Phaser.Scene {
             // KEEP THE JUMP VELOCITY FOR CONSISTENCY IN JUMPING; NO LOSING VELOCITY WITH COLLISIONS
             this.avocado.body.velocity.y = this.JUMP_VEL;
             this.avocado.anims.play('jump', true);
+            this.boing.play(this.boingConfig); // play music with config settings
+
         }        
         
         // check keyboard input
@@ -236,28 +284,43 @@ class Play extends Phaser.Scene {
             this.avocado.x = game.config.width;
         }
 
-        let gameOver = false;
-
-        if (this.avocado.y >= 2400) {
+        if (this.avocado.y >= 2000) {
             gameOver = true;
-            console.log("GAMEOVER");
         }
         // when game is over
         if (gameOver) {
-            this.game.pause(); // pause game
-            this.add.text(this.game.config.width/2 - 90, this.avocado.y,  "Game Over!", this.scoreConfig).setOrigin(0,0);
-            this.avocado.destroy();
+            this.add.text(this.game.config.width/2 - 90, this.game.config.height/2,  "Game Over!", this.scoreConfig).setOrigin(0,0);
+            this.avocado.alpha = 0;
+             // display restart game message in parallel with game over
+            this.game_end = this.add.text(game.config.width/2 - 20, 300, 'Press (R) to Restart or ← for Menu', this.scoreConfig).setOrigin(0.5);
+            this.game_end.fixedToCamera = true;
+            this.game_end.setScrollFactor(0,0);
         }
 
+        // check key input for restart
+        if (gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+            console.log("RIGHT");
+            this.endGame.play(this.endConfig); // play music with config settings
+            this.scene.restart(); // reset the scene
+        }
+
+        // check key input for menu
+        if (gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            console.log("RIGHT");
+            this.endGame.play(this.endConfig); // play music with config settings
+            this.scene.start("menuScene");
+        }
+
+
         // update high score if doesn't exist already
-        if (localStorage.getItem('highscore' == null)) {
-            localStorage.setItem('highscore', this.p1Score);
+        if (localStorage.getItem('highscore_avo' == null)) {
+            localStorage.setItem('highscore_avo', this.p1Score);
         }
         
         // update max score if greater than first item
-        else if (this.p1Score > localStorage.getItem('highscore')) {
-            localStorage.setItem('highscore', this.p1Score); // update score
-            this.highScore.text = "High Score: " + localStorage.getItem('highscore'); // updates high score as you beat it
+        else if (this.p1Score > localStorage.getItem('highscore_avo')) {
+            localStorage.setItem('highscore_avo', this.p1Score); // update score
+            this.highScore.text = "High Score: " + localStorage.getItem('highscore_avo'); // updates high score as you beat it
         }
         
     }
