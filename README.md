@@ -1,4 +1,4 @@
-# **Endless Runner** :candy:
+# **Endless Runner** 🥑
 
 **Play the game here!** 👉 https://msaini26.github.io/avocado-adventure/
 
