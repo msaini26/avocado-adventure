@@ -145,7 +145,7 @@ class Play extends Phaser.Scene {
         this.scoreConfig = {
             fontFamily:'chicken-pie', // set font
             fontSize: '28px', // set font size
-            backgroundColor: '#e7c9ff', // set score background color
+            backgroundColor: '#C1E1C1', // set score background color
             color: '#FFFFFF', // set text color
             align: 'center', // align score to the center
             padding: { // set padding around text
@@ -159,7 +159,7 @@ class Play extends Phaser.Scene {
         let highScoreConfig = {
             fontFamily:'comic-story', // set font
             fontSize: '28px', // set font size
-            backgroundColor: '#e7c9ff', // set score background color
+            backgroundColor: '#C1E1C1', // set score background color
             color: '#FFFFFF', // set text color
             align: 'center', // align score to the center
             padding: { // set padding around text
