@@ -9,7 +9,7 @@ class GameControls extends Phaser.Scene {
         // title screen background
         this.load.image('background', './assets/background/title_sky.png'); // sky background image
         
-        // credit: pixabay - jimgor33: Loading Main Menu
+        // credit: pixabay: Game Controls
         // load background music
         this.load.audio('game-controls', './assets/game-controls.mp3');
     }
