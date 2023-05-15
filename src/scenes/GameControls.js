@@ -68,14 +68,16 @@ class GameControls extends Phaser.Scene {
         keyboard_text.setShadow(2, 2, '#2d4e3f');
 
     
-        var rules = this.add.text(60, 285, '◉  Use ←→ arrows to move', paragraphConfig).setOrigin(0);
-        // var more_rules = this.add.text(60, 315, '     & (F) to fire', paragraphConfig).setOrigin(0);
-
+        var rules = this.add.text(20, 225, '◉  Use ←→ arrows to move', paragraphConfig).setOrigin(0);
+        var more_rules = this.add.text(20, 255, '     Goal: Jump as high as you can', paragraphConfig).setOrigin(0);
+        var more_rules = this.add.text(20, 285, '     Each jumping threshold gives ', paragraphConfig).setOrigin(0);
+        var more_rules = this.add.text(20, 315, '     you 10 points. The higher you', paragraphConfig).setOrigin(0);
+        var more_rules = this.add.text(20, 345, '     jump, the more points you get.', paragraphConfig).setOrigin(0);
 
        
         //directions to start
         menuConfig.color = '#ba5407';
-        this.add.text(105, 365, 'Press ← to start', paragraphConfig).setOrigin(0);
+        this.add.text(105, 385, 'Press ← to start', paragraphConfig).setOrigin(0);
 
      
         // show game controls title
