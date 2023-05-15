@@ -63,13 +63,14 @@ class Menu extends Phaser.Scene {
 
        
         // show menu text
-        var title = this.add.text(game.config.width/30, game.config.height/4 - borderUISize - borderPadding, ' Avocado Adventure', titleConfig);
+        var title = this.add.text(game.config.width/30, game.config.height/4 - borderUISize - borderPadding, ' Avocado', titleConfig);
+        var title_2 = this.add.text(game.config.width/30, game.config.height/2.5 - borderUISize - borderPadding, 'Adventure', titleConfig);
         title.setShadow(4, 4, '#2d4e3f');
-        console.log(title);
+        title_2.setShadow(4, 4, '#2d4e3f');
 
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = '#000';
-        var level_mode = this.add.text(game.config.width/2 - 20, game.config.height/1.5 + borderUISize + borderPadding, 'Press ← to continue', subConfig).setOrigin(0.5);
+        var level_mode = this.add.text(game.config.width/3.5, game.config.height/1.5, 'Press ← to continue', subConfig).setOrigin(0.5);
         level_mode.setShadow(4, 4, '#2d4e3f');
 
 
@@ -90,7 +91,6 @@ class Menu extends Phaser.Scene {
         // create sound instance
         this.music = this.sound.add('background_music', musicConfig);
         this.music.play(musicConfig); // play music with config settings
-
 
     }
 
