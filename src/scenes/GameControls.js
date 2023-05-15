@@ -81,7 +81,7 @@ class GameControls extends Phaser.Scene {
 
      
         // show game controls title
-        var title = this.add.text(game.config.width/6, game.config.height/7 - borderUISize - borderPadding, 'Game Controls', titleConfig);
+        var title = this.add.text(game.config.width/35, game.config.height/7 - borderUISize, 'Game Controls', titleConfig);
         title.setShadow(4, 4, '#2d4e3f');
 
 
