@@ -87,13 +87,6 @@ class Play extends Phaser.Scene {
             this.baguette_platforms.add(baguette); // add single baguette to the group of platforms
         }
 
-        // add broken baguettes into baguette platforms group
-        for (let i = 0; i < game.config.height - 100; i += 40) {
-            let broken_baguette= this.physics.add.sprite(game.config.width * Math.random(), i, 'broken-bread').setScale(0.12).setOrigin(0);
-            broken_baguette.body.immovable = true; // allow platform to fall of when the player hits it
-            broken_baguette.body.allowGravity = false;
-            this.baguette_platforms.add(broken_baguette); // add broken baguette platforms to platforms group
-        }
 
         // set up jumping avocado
         this.avocado = this.physics.add.sprite(game.config.width/2, game.config.height - 200, 'squash', 'avocado-squash0').setScale(0.15);
@@ -121,6 +114,7 @@ class Play extends Phaser.Scene {
         this.avocado.body.checkCollision.up = false;
         this.avocado.body.checkCollision.left = false;
         this.avocado.body.checkCollision.right = false;
+
 
         // add physics collider
         this.physics.add.collider(this.avocado, this.ground); // avocado collides with ground
@@ -219,6 +213,7 @@ class Play extends Phaser.Scene {
         }
 
         let gameOver = false;
+        console.log(this.avocado);
 
         // avocado is on the ground
         this.avocado.onGround = this.avocado.body.touching.down;
@@ -245,9 +240,6 @@ class Play extends Phaser.Scene {
             this.avocado.body.setVelocityX(0); // not moving left or right
         }
 
-        // TODO: create an array of indices to be removed
-
-
         // iterate through baguette group
         for (let i = 0; i < this.baguette_platforms.children.entries.length; i++) {
             // init baguette in array of baguettes
@@ -266,6 +258,7 @@ class Play extends Phaser.Scene {
                 baguette.destroy(); // destroy baguette sprite
             }                
         }
+
         // check if the image is out of the frame
         if (this.sky.y >= this.cam.midPoint.y + this.cam._height/2 &&
         !this.MOVING_STUFF) {
@@ -303,6 +296,8 @@ class Play extends Phaser.Scene {
             this.avocado.alpha = 0;
              // display restart game message in parallel with game over
             this.game_end = this.add.text(game.config.width/2 - 20, 300, 'Press (R) to Restart or ← for Menu', this.scoreConfig).setOrigin(0.5);
+            // delete avocado
+            this.avocado.body.destroy();
             this.game_end.fixedToCamera = true;
             this.game_end.setScrollFactor(0,0);
             this.game_end.setShadow(2, 2, '#2d4e3f');
@@ -361,12 +356,8 @@ class Play extends Phaser.Scene {
             
         }
 
-        this.MOVING_STUFF = true;
 
-        // debugging statements
-        // console.log("MOVING STUFF");
-        // console.log(this.baguette_platforms.children)
-        // console.log("MOVED STUFF")
+        this.MOVING_STUFF = true;
 
         // remove initial tile if not already destroyed
         // to prevent re-population of initial tile 
@@ -415,13 +406,6 @@ class Play extends Phaser.Scene {
             baguette.body.immovable = true;
             baguette.body.allowGravity = false;
             this.baguette_platforms.add(baguette);
-
-            // re-populate broken baguettes and respective properties
-            let broken_baguette_height = height - 80 * i; // set difficulty for broken baguette
-            let broken_baguette = this.physics.add.sprite(game.config.width * Math.random(), broken_baguette_height, 'broken-bread').setScale(0.12).setOrigin(0);
-            broken_baguette.body.immovable = true;
-            broken_baguette.body.allowGravity = false;
-            this.baguette_platforms.add(broken_baguette); // add broken baguette to group of baguettes
         }
     }
 }
