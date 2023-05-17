@@ -4,19 +4,18 @@ class Enemy extends Phaser.GameObjects.Sprite {
         super(scene, x, y, texture); // inherit phaser functionalities
         scene.add.existing(this); // add to existing scene
 
-        //TODO: shrink bottle and collision detection
+        scene.physics.add.existing(this); // add physics
+
         this.points = pointValue; // store pointValue
-        // this.moveSpeed = game.settings.spaceshipSpeed; // pixels per frame
+
+        //  // have sriracha bottle follow avocado
+        //  let angle = Phaser.Math.Angle.Between(this.x, this.y, this.avocado.x, this.avocado.y);
+        //  // rotate sriracha bottle
+        //  this.setRotation(angle+Math.PI/2);
     }
 
     // updates per frame
     update() {
-        // move spaceship left
-        // this.x -= this.moveSpeed;
-        // wrap around from left edge to right edge
-        // if (this.x <= 0 - this.width) {
-        //     this.reset(); // reset spaceships
-        // }
     }
 
     // position reset

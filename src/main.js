@@ -75,7 +75,8 @@ let config = {
             }
         }
     },
-    scene: [Menu, GameControls, Play] // init menu and play scenes
+    // TODO: temp ordering of scenes
+    scene: [Play, GameControls, Menu] // init menu and play scenes
 }
 
 let game = new Phaser.Game(config); // init new phaser game
