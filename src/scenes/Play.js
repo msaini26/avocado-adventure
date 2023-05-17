@@ -10,8 +10,6 @@ class Play extends Phaser.Scene {
         this.load.image('sky', './assets/background/background.png'); // sky background image
         this.load.image('bread', './assets/platform/final-bread.png'); // bread ground tiles
         this.load.atlas('squash', './assets/player/squash.png', './assets/json/squash.json'); // import avocado squash texture atlas
-        this.load.image('sauce', './assets/enemies/sauce.png');
-        this.load.image('pepper', './assets/enemies/pepper.png');
 
         // credit: pixabay - AlexiMusic: Passion
         // load background music
@@ -192,15 +190,6 @@ class Play extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
-        // pepper enemy
-        this.pepper = this.physics.add.sprite(this.game.config.width/2, this.game.config.height, 'pepper', 0).setScale(0.4).setOrigin(1, 1);
-        this.pepper.body.allowGravity = false;
-        this.pepper.body.immovable = false;
-
-        // create the sriracha enemy
-        this.sauce = this.physics.add.sprite(this.game.config.width/2, this.game.config.height - 15, 'sauce', 30).setScale(0.4).setOrigin(1, 1);
-        this.sauce.body.allowGravity = false;
-        this.sauce.body.immovable = false;
     }
 
     // constant updates in game canvas
@@ -208,32 +197,7 @@ class Play extends Phaser.Scene {
 
         let gameOver = false;
 
-        // have sriracha bottle follow avocado
-        let angle = Phaser.Math.Angle.Between(this.sauce.x, this.sauce.y, this.avocado.body.x, this.avocado.body.y);
-        // rotate sriracha bottle
-        this.sauce.setRotation(angle+Math.PI/2);
-
-        // rotate pepper
-        this.pepper.setRotation(angle+Math.PI/2);
-        this.physics.moveTo(this.pepper, this.avocado.x, this.avocado.y, 200); // move pepper to avocado
-
-
-        // check if pepper hits the avocado
-        if (this.physics.overlap(this.pepper, this.avocado)) {
-            this.pepper.destroy();
-            if (this.p1Score > 0) { this.p1Score -= 1; }
-           
-            // recreate pepper
-            this.pepper = this.physics.add.sprite(this.game.config.width/2, this.game.config.height, 'pepper', 0).setScale(0.4).setOrigin(1, 1);
-            this.pepper.body.allowGravity = false;
-            this.pepper.body.immovable = false;
-    
-            this.pepper.setRotation(angle+Math.PI/2);
-            this.physics.moveTo(this.pepper, this.avocado.x, this.avocado.y,500); // move pepper to avocado
-
-        };
-
-        // when avocado reaches the next zone
+       // when avocado reaches the next zone
         if (this.avocado.y <= this.game.config.height/3*2){
             this.scroll_food_down();
             this.generate_food_up();
@@ -319,8 +283,6 @@ class Play extends Phaser.Scene {
         // when game is over
         if (gameOver) {
 
-            this.sauce.alpha = 0;
-            this.pepper.alpha = 0;
             this.add.text(this.game.config.width/2 - 90, this.game.config.height/2,  "Game Over!", this.scoreConfig).setOrigin(0,0);
             this.avocado.alpha = 0;
              // display restart game message in parallel with game over
@@ -435,19 +397,6 @@ class Play extends Phaser.Scene {
             baguette.body.allowGravity = false;
             this.baguette_platforms.add(baguette);
         }
-    }
-
-    // create new peppers
-    create_peppers() {
-        // pepper enemy
-        this.pepper = this.physics.add.sprite(this.game.config.width/2, this.game.config.height, 'pepper', 0).setScale(0.4).setOrigin(1, 1);
-        this.pepper.body.allowGravity = false;
-        this.pepper.body.immovable = false;
-
-        this.pepper.setRotation(angle+Math.PI/2);
-        this.physics.moveTo(this.pepper, this.avocado.x, this.avocado.y,500); // move pepper to avocado
-
-        return this.pepper;
     }
 
 }
