@@ -286,12 +286,38 @@ class Play extends Phaser.Scene {
             this.add.text(this.game.config.width/2 - 90, this.game.config.height/2,  "Game Over!", this.scoreConfig).setOrigin(0,0);
             this.avocado.alpha = 0;
              // display restart game message in parallel with game over
-            this.game_end = this.add.text(game.config.width/2 - 20, 300, 'Press (R) to Restart or ← for Menu', this.scoreConfig).setOrigin(0.5);
+            this.game_end = this.add.text(game.config.width/2 - 20, 150, 'Press (R) to Restart or ← for Menu', this.scoreConfig).setOrigin(0.5);
+
+            this.credit = this.add.text(game.config.width, 170, 'Pixabay is royalty-free music', this.scoreConfig).setOrigin(0);
+           
+            this.other_credit = this.add.text(game.config.width - 320, 250, 'credit: pixabay - jimgor33: Loading Main Menu', this.scoreConfig).setOrigin(0.5);
+            this.more_credit = this.add.text(game.config.width - 320, 300, 'credit: pixabay - Game Controls', this.scoreConfig).setOrigin(0.5);
+            this.even_more = this.add.text(game.config.width - 320, 350, 'credit: pixabay - AlexiMusic: Passion', this.scoreConfig).setOrigin(0.5);
+            this.sound_credit = this.add.text(game.config.width - 320, 400, 'pixabay - Boing Sound Effect', this.scoreConfig).setOrigin(0.5);
+           
             // delete avocado
             this.avocado.body.destroy();
+
+            // in game credits
             this.game_end.fixedToCamera = true;
             this.game_end.setScrollFactor(0,0);
+            this.credit.fixedToCamera = true;
+            this.credit.setScrollFactor(0, 0); 
+            this.other_credit.fixedToCamera = true;
+            this.other_credit.setScrollFactor(0, 0);
+            this.other_credit.setShadow(2, 2, '#2d4e3f'); 
+            this.more_credit.fixedToCamera = true;
+            this.more_credit.setScrollFactor(0, 0);
+            this.more_credit.setShadow(2, 2, '#2d4e3f'); 
+            this.even_more.fixedToCamera = true;
+            this.more_credit.fixedToCamera = true;
+            this.even_more.setScrollFactor(0, 0);
+            this.even_more.setShadow(2, 2, '#2d4e3f');
+            this.sound_credit.fixedToCamera = true;
+            this.sound_credit.setScrollFactor(0, 0);
+            this.sound_credit.setShadow(2, 2, '#2d4e3f');
             this.game_end.setShadow(2, 2, '#2d4e3f');
+            this.credit.setShadow(2, 2, '#2d4e3f');
 
         }
 
